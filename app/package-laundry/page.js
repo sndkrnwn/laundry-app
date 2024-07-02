@@ -59,7 +59,7 @@ export default function PackageLaundry() {
           }
         </div>
       </Row>
-      <FooterAction />
+      <FooterAction linkTo="/confirmation" />
     </PackageStyled>
   )
 }

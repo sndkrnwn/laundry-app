@@ -1,7 +1,7 @@
 import StandardButton from "../button";
 import { FooterActionStyled } from "./page.styled";
 
-const FooterAction = () => {
+const FooterAction = ({ linkTo }) => {
     return (
         <FooterActionStyled>
             <StandardButton
@@ -9,6 +9,7 @@ const FooterAction = () => {
                   htmlType="button"
                   block
                   label="Continue"
+                  buttonLink={linkTo}
             />
         </FooterActionStyled>
     )
