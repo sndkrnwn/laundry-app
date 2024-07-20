@@ -22,7 +22,7 @@ const LaundryItem = ({
             <Row>
                 <Col span={6}>
                     <div className="image">
-                        <Image src={image} width={45} />
+                        <Image src={image} width={45}  preview={false}/>
                     </div>
                 </Col>
                 <Col span={12}>

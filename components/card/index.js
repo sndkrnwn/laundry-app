@@ -7,7 +7,7 @@ const PackageCard = ({ label, image }) => {
         <PackageCardStyled>
             <Link href="package-laundry">
                 <div className="box">
-                    <Image src={image} width={45} />
+                    <Image src={image} width={45} preview={false} />
                 </div>
                 <Typography>
                     {label}

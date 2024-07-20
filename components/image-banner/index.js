@@ -5,7 +5,7 @@ import { ImageBannerStyled } from "./page.styled"
 const ImageBanner = () => {
     return (
         <ImageBannerStyled>
-            <Image src={LOGO.src} width={300} />
+            <Image src={LOGO.src} width={300}  preview={false}/>
         </ImageBannerStyled>
     )
 }
