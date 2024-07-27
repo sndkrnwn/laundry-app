@@ -29,6 +29,18 @@ a {
   }
 }
 
+.mb-primary {
+  margin-bottom: 24px !important;
+}
+
+.mb-secondary {
+  margin-bottom: 12px !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
 .standard-button {
   .ant-btn-primary {
     background: #00203f !important;
@@ -39,5 +51,9 @@ a {
   }
   button {
     height: 40px !important;
+    &:disabled {
+      color: grey !important;
+      font-weight: bold !important;
+    }
   }
 }

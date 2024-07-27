@@ -1,7 +1,7 @@
 import StandardButton from "../button";
 import { FooterActionStyled } from "./page.styled";
 
-const FooterAction = ({ linkTo }) => {
+const FooterAction = ({ linkTo, disabled  }) => {
     return (
         <FooterActionStyled>
             <StandardButton
@@ -10,6 +10,7 @@ const FooterAction = ({ linkTo }) => {
                   block
                   label="Continue"
                   buttonLink={linkTo}
+                  disabled={disabled}
             />
         </FooterActionStyled>
     )

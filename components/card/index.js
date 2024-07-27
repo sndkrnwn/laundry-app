@@ -5,7 +5,7 @@ import { PackageCardStyled } from "./page.styled";
 const PackageCard = ({ label, image }) => {
     return (
         <PackageCardStyled>
-            <Link href="package-laundry">
+            <Link href={label === "Aktivitas" ? "activity" : `package-laundry/${label}`}>
                 <div className="box">
                     <Image src={image} width={45} preview={false} />
                 </div>

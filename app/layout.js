@@ -1,4 +1,5 @@
 import { Inter } from 'next/font/google';
+import { Provider } from 'jotai';
 import AntdRegistry from '@ant-design/nextjs-registry/lib/AntdRegistry';
 // import "./globals.css";
 import './globals.scss';
@@ -14,7 +15,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <AntdRegistry>
-      <body className={inter.className}>{children}</body>
+        <body className={inter.className}>
+          <Provider>
+            {children}
+          </Provider>
+        </body>
       </AntdRegistry>
     </html>
   );

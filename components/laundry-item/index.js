@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useAtom } from "jotai"
+import { transactionAtom } from "@/app/data-management/transaction"
 import { Row, Col, Image, Typography } from "antd"
 import { MinusOutlined } from "@ant-design/icons"
 import { PlusOutlined } from "@ant-design/icons"
@@ -7,15 +8,22 @@ import { LaundryItemStyled } from "./page.styled"
 const LaundryItem = ({
     image,
     label,
-    price
+    price,
+    name
 }) => {
-    const [counter, setCounter] = useState(0);
-    const handleCounterMore = () => {
-        setCounter(counter + 1)
+    const [transaction, setTransaction] = useAtom(transactionAtom)
+    const handleCounterMore = (key) => {
+        setTransaction({
+            ...transaction,
+            [key]: transaction[name] + 1
+        })
     }
 
-    const handleCounterLess = () => {
-        setCounter(counter - 1);
+    const handleCounterLess = (key) => {
+        setTransaction({
+            ...transaction,
+            [key]: transaction[name] - 1
+        })
     }
     return (
         <LaundryItemStyled>
@@ -33,13 +41,13 @@ const LaundryItem = ({
                 </Col>
                 <Col span={6}>
                     <div className="counter">
-                        <div className="left" onClick={handleCounterLess}>
+                        <div className="left" onClick={transaction[name] === 0 ? () => {} : () => handleCounterLess(name)}>
                             <MinusOutlined />
                         </div>
                         <div className="value">
-                            <Typography>{counter}</Typography>
+                            <Typography>{transaction[name]}</Typography>
                         </div>
-                        <div className="right" onClick={handleCounterMore}>
+                        <div className="right" onClick={() => handleCounterMore(name)}>
                             <PlusOutlined />
                         </div>
                     </div>

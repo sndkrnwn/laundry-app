@@ -1,4 +1,7 @@
 'use client';
+import { useEffect } from 'react';
+import { useAtom } from 'jotai'
+import { transactionAtom } from '../data-management/transaction';
 import { Col, Row, Typography } from 'antd';
 import { LandingPageStyled } from './page.styled';
 import ProfileHeader from '@/components/profile-header';
@@ -26,6 +29,22 @@ const SERVICES_LANDING_PAGE = [
 ]
 
 export default function LandingPage() {
+    const [, setTransaction] = useAtom(transactionAtom)
+    useEffect(() => {
+        setTransaction({
+            tShirt: 0,
+            pants: 0,
+            jeans: 0,
+            shorts: 0,
+            shirt: 0,
+            price: '',
+            startDate: '',
+            duration: 0,
+            endDate: '',
+            type: '',
+            user: ''
+        })
+    }, [])
     return (
         <LandingPageStyled>
             <ProfileHeader />
@@ -44,7 +63,7 @@ export default function LandingPage() {
                             SERVICES_LANDING_PAGE.map((item, i) => {
                                 return (
                                     <Col span={8} key={`key-${item}`}>
-                                        <PackageCard label={item.label} image={item.img} />
+                                        <PackageCard label={item.label} image={item.img} history={item.label}/>
                                     </Col>
                                 )
                             })

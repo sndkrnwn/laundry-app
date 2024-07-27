@@ -1,13 +1,16 @@
 import { Typography } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
+import Link from "next/link";
 import { PackageHeaderStyled } from "./page.styled";
 
-const PackageHeader = () => {
+const PackageHeader = ({ history, backUrl }) => {
     return (
         <PackageHeaderStyled>
-            <LeftOutlined />
+            <Link href={`/${backUrl}`}>
+                <LeftOutlined />
+            </Link>
             <Typography>
-                Paket Lengkap
+                Paket {history}
             </Typography>
         </PackageHeaderStyled>
     )   

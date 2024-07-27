@@ -6,6 +6,7 @@ export const PackageCardStyled = styled.div`
     justify-content: center;
     flex-direction: column;
     margin-bottom: 24px;
+    text-align: center;
     .box {
         display: flex;
         align-items: center;

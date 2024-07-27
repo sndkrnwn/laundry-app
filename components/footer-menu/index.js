@@ -15,7 +15,7 @@ const FOOTER_MENU = [
     {
         label: "Profile",
         icon: <UserOutlined />,
-        link: "/profile"
+        link: "/landing-page"
     }, 
     {
         label: "Log Out",

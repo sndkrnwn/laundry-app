@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import {  Button, Form } from 'antd';
 
-const StandardButton = ({ label, type = "primary", htmlType = "button", block, buttonLink = "" }) => {
+const StandardButton = ({ label, type = "primary", htmlType = "button", block, buttonLink = "", disabled = false }) => {
     return (
         <Form.Item
             className="standard-button"
@@ -9,7 +9,7 @@ const StandardButton = ({ label, type = "primary", htmlType = "button", block, b
             {
                 buttonLink.length > 0 ?
                 <Link href={buttonLink}>
-                    <Button type={type} htmlType={htmlType} block={block}> 
+                    <Button type={type} htmlType={htmlType} block={block} disabled={disabled}> 
                         {label}
                     </Button>
                 </Link>

@@ -8,6 +8,6 @@ export const PackageStyled = styled.div`
     width: 100%;
     max-height: 512px;
     overflow: auto;
-    padding-bottom: 30px;
+    padding-bottom: 100px;
   }
 `;
