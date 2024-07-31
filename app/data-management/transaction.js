@@ -11,5 +11,8 @@ export const transactionAtom = atom({
     duration: 0,
     endDate: '',
     type: '',
-    user: ''
+    user: '',
+    // 0 = waiting, 1 = accepted
+    status: 0,
+    id: ''
 });

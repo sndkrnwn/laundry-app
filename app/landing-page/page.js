@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai'
 import { transactionAtom } from '../data-management/transaction';
 import { Col, Row, Typography } from 'antd';
@@ -29,6 +29,12 @@ const SERVICES_LANDING_PAGE = [
 ]
 
 export default function LandingPage() {
+    const [user, setUser] = useState({
+        fullname: null,
+        username: null,
+        password: null
+    });
+
     const [, setTransaction] = useAtom(transactionAtom)
     useEffect(() => {
         setTransaction({
@@ -44,44 +50,71 @@ export default function LandingPage() {
             type: '',
             user: ''
         })
+        const getUser = localStorage.getItem("user-idle");
+        if(getUser) {
+            setUser(JSON.parse(getUser))
+        }
     }, [])
-    return (
-        <LandingPageStyled>
-            <ProfileHeader />
-            <Row>
-                <Col span={22} offset={1}>
-                    <ImageBanner />
-                </Col>
-            </Row>
-            <Row>
-                <Col span={22} offset={1}>
-                    <Row>
-                        <Col span={22} style={{ marginBottom: "14px" }}>
-                            <Typography>Services</Typography>
+
+    if(user.username !== null) {
+        return (
+            <LandingPageStyled>
+                <ProfileHeader />
+                <Row>
+                    <Col span={22} offset={1}>
+                        <ImageBanner />
+                    </Col>
+                </Row>
+                <Row>
+                    {
+                        user.username !== "admin" ?
+                        <Col span={22} offset={1}>
+                            <Row>
+                                <Col span={22} style={{ marginBottom: "14px" }}>
+                                    <Typography>Services</Typography>
+                                </Col>
+                                {
+                                    SERVICES_LANDING_PAGE.map((item, i) => {
+                                        return (
+                                            <Col span={8} key={`key-${item}`}>
+                                                <PackageCard label={item.label} image={item.img} history={item.label}/>
+                                            </Col>
+                                        )
+                                    })
+                                }
+                            </Row>
                         </Col>
-                        {
-                            SERVICES_LANDING_PAGE.map((item, i) => {
-                                return (
-                                    <Col span={8} key={`key-${item}`}>
-                                        <PackageCard label={item.label} image={item.img} history={item.label}/>
-                                    </Col>
-                                )
-                            })
-                        }
-                    </Row>
-                </Col>
-                <Col span={22} offset={1}>
-                    <Row>
-                        <Col span={22} style={{ marginBottom: "14px" }}>
-                            <Typography>History</Typography>
+                        :
+                        null
+                    }
+                    {
+                        user.username === "admin" ?
+                        <Col span={22} offset={1}>
+                            <Row>
+                                <Col span={22} style={{ marginBottom: "14px" }}>
+                                    <Typography>Pesanan Masuk</Typography>
+                                </Col>
+                                <Col span={8}>
+                                    <PackageCard label="Aktivitas" image={ICONAKTIVITAS.src} />
+                                </Col>
+                            </Row>
                         </Col>
-                        <Col span={8}>
-                            <PackageCard label="Aktivitas" image={ICONAKTIVITAS.src} />
+                        :
+                        <Col span={22} offset={1}>
+                            <Row>
+                                <Col span={22} style={{ marginBottom: "14px" }}>
+                                    <Typography>History</Typography>
+                                </Col>
+                                <Col span={8}>
+                                    <PackageCard label="Aktivitas" image={ICONAKTIVITAS.src} />
+                                </Col>
+                            </Row>
                         </Col>
-                    </Row>
-                </Col>
-            </Row>
-            <FooterMenu />
-        </LandingPageStyled>
-    )
+                    }
+                    
+                </Row>
+                <FooterMenu />
+            </LandingPageStyled>
+        )
+    }
 }

@@ -2,6 +2,7 @@
 import { Row, Col, Typography, DatePicker, Select } from "antd" 
 import { useAtom } from "jotai"
 import dayjs from 'dayjs';
+import { v4 } from "uuid";
 import { transactionAtom } from "@/app/data-management/transaction";
 import PackageHeader from "@/components/package-header";
 import ImageBanner from "@/components/image-banner";
@@ -9,10 +10,12 @@ import FooterAction from "@/components/footer-action";
 import LaundryItem from "@/components/laundry-item";
 import ICONCUCI from '@/public/image/icon-cuci.png';
 import { PackageStyled } from "./page.styled";
+import { useEffect } from "react";
 
 export default function PackageLaundry({ params: { slug } }) {
   const [transaction, setTransaction] = useAtom(transactionAtom);
   const { tShirt, pants, jeans, short, shirt } = transaction;
+  const randomId = v4().replace(/-/g, '').substr(0, 10);;
   const LIST_ITEM = [
     {
         label: "T-Shirt",
@@ -61,6 +64,16 @@ export default function PackageLaundry({ params: { slug } }) {
       duration: value
     })
   };
+
+  useEffect(() => {
+    setTransaction({
+      ...transaction,
+      startDate: dayjs().format('YYYY-MM-DD'),
+      duration: 1,
+      status: 0,
+      id: randomId
+    })
+  }, [])
 
   return (
     <PackageStyled>
