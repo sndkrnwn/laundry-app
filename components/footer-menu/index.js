@@ -1,7 +1,6 @@
 import { Typography } from "antd"
 import { useRouter } from "next/navigation";
 import { HomeFilled } from "@ant-design/icons"
-import { UserOutlined } from "@ant-design/icons"
 import { LogoutOutlined } from "@ant-design/icons"
 
 import { FooterMenuStyled } from "./page.styled"
@@ -10,11 +9,6 @@ const FOOTER_MENU = [
     {
         label: "Home",
         icon: <HomeFilled />,
-        link: "/landing-page"
-    }, 
-    {
-        label: "Profile",
-        icon: <UserOutlined />,
         link: "/landing-page"
     }, 
     {

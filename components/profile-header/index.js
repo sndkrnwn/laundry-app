@@ -22,11 +22,11 @@ const ProfileHeader = () => {
                 <Image src={AVATAR.src} width={50}  preview={false}/>
                 <Typography>{user.fullname}</Typography>
             </div>
-            <div className="profile-notification">
+            {/* <div className="profile-notification">
                 <div className="bell">
                     <BellFilled />
                 </div>
-            </div>
+            </div> */}
         </ProfileHeaderStyled>
     )
 }

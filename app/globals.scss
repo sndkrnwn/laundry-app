@@ -2,6 +2,30 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  &:focus:not(:focus-visible) {
+    outline: none !important; /* Remove the focus outline */
+    box-shadow: none !important; /* Remove any box-shadow if present */
+    color: transparent !important;
+  }
+}
+
+a {
+  &:focus:not(:focus-visible) {
+    outline: none !important; /* Remove the focus outline */
+    box-shadow: none !important; /* Remove any box-shadow if present */
+    color: transparent !important;
+  }
+}
+
+/* Additional specificity for Ant Design components */
+.ant-btn:focus:not(:focus-visible),
+.ant-input:focus:not(:focus-visible),
+.ant-select-selector:focus:not(:focus-visible),
+.ant-checkbox-wrapper:focus:not(:focus-visible),
+.ant-radio-wrapper:focus:not(:focus-visible),
+.ant-switch:focus:not(:focus-visible) {
+  outline: none; /* Remove the focus outline */
+  box-shadow: none; /* Remove any box-shadow if present */
 }
 
 html,
