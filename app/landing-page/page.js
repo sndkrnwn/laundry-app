@@ -87,31 +87,18 @@ export default function LandingPage() {
                         :
                         null
                     }
-                    {
-                        user.username === "admin" ?
-                        <Col span={22} offset={1}>
-                            <Row>
-                                <Col span={22} style={{ marginBottom: "14px" }}>
-                                    <Typography>Pesanan Masuk</Typography>
-                                </Col>
-                                <Col span={8}>
-                                    <PackageCard label="Aktivitas" image={ICONAKTIVITAS.src} />
-                                </Col>
-                            </Row>
-                        </Col>
-                        :
-                        <Col span={22} offset={1}>
-                            <Row>
-                                <Col span={22} style={{ marginBottom: "14px" }}>
-                                    <Typography>History</Typography>
-                                </Col>
-                                <Col span={8}>
-                                    <PackageCard label="Aktivitas" image={ICONAKTIVITAS.src} />
-                                </Col>
-                            </Row>
-                        </Col>
-                    }
-                    
+                   <Col span={22} offset={1}>
+                        <Row>
+                            <Col span={22} style={{ marginBottom: "14px" }}>
+                                <Typography>{
+                                    user.username === "admin" ? "Transaksi" : "Laundry Kamu"
+                                }</Typography>
+                            </Col>
+                            <Col span={8}>
+                                <PackageCard label={user.username === "admin" ? "Laundry Pelanggan" : "Aktivitas"} image={ICONAKTIVITAS.src} />
+                            </Col>
+                        </Row>
+                    </Col>
                 </Row>
                 <FooterMenu />
             </LandingPageStyled>

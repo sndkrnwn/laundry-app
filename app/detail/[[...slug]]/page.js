@@ -1,11 +1,13 @@
 'use client';
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import useHistory from "@/app/hooks/useHistory";
-import { Row, Col, Typography, Divider, Button, notification } from "antd" 
+import { Row, Col, Typography, Divider, Button, notification, Image } from "antd" 
 import PackageHeader from "@/components/package-header";
 import ImageBanner from "@/components/image-banner";
+import Watermark from '@/public/image/watermark.png';
 import { DetailStyled } from "./page.styled";
-import { useEffect } from "react";
 
 export default function DetailLaundry({ params: {slug} }) {
     const [userIdle, setUserIdle] = useState(null);
@@ -30,10 +32,11 @@ export default function DetailLaundry({ params: {slug} }) {
 }
 
 const RenderContent = ({ slug, detailTransaction, dataUserIdle }) => {
-    const [isLoading, setLoading] = useState(false);
+    const [isLoadingDownload, setLoadingDownload] = useState(false);
     const [isLoadingAccept, setLoadingAccept] = useState(false);
     const [isLoadingReject, setLoadingReject] = useState(false);
-
+    const [isLoadingComplete, setLoadingComplete] = useState(false);
+    const cardRef = useRef();
     const [api, contextHolder] = notification.useNotification();
     const { replace } = useHistory();
     const getEndDate = (value, duration) => {
@@ -68,7 +71,7 @@ const RenderContent = ({ slug, detailTransaction, dataUserIdle }) => {
         },
         {
             label: "Status",
-            value: detailTransaction.status === 0 ? "Waiting" : detailTransaction.status === 1 ? "Accepted" : "Rejected"
+            value: detailTransaction.status === 0 ? "Waiting" : detailTransaction.status === 1 ? "Accepted" : detailTransaction.status === 2 ? "Rejected" : "Completed"
         },
     ]
 
@@ -105,34 +108,14 @@ const RenderContent = ({ slug, detailTransaction, dataUserIdle }) => {
         });
         setTimeout(() => {
             localStorage.setItem("list-transaction", JSON.stringify(dataTransaction))
+            setLoadingDownload(false);
+            setLoadingReject(false);
+            setLoadingAccept(false);
+            setLoadingComplete(false);
             replace("/activity")
         }, 1500)
     };
-
-    const handleSubmit = () => {
-        setLoading(true);
-        const hasListTransaction = localStorage.getItem("list-transaction");
-        if(hasListTransaction) {
-            let prevTransaction = JSON.parse(hasListTransaction);
-            let newTransactionWithPrev = [transaction];
-            let updateTransaction = [...prevTransaction, ...newTransactionWithPrev]
-            setTimeout(() => {
-                openNotificationWithRedirect("Congratulation, your laundry request has been sent", updateTransaction)
-                setLoading(false);
-                setLoadingReject(false);
-                setLoadingAccept(false);
-            }, 2500)
-        } else {
-            setTimeout(() => {
-                let newTransaction = [transaction];
-                openNotificationWithRedirect("Congratulation, your laundry request has been sent", newTransaction)
-                setLoading(false);
-                setLoadingReject(false);
-                setLoadingAccept(false);
-            }, 2500)
-        }
-    }
-
+    
     const handleReject = () => {
         setLoadingReject(true)
         const hasListTransaction = localStorage.getItem("list-transaction");
@@ -163,55 +146,100 @@ const RenderContent = ({ slug, detailTransaction, dataUserIdle }) => {
         }
     }
 
+    const handleComplete = () => {
+        setLoadingComplete(true)
+        const hasListTransaction = localStorage.getItem("list-transaction");
+        if(hasListTransaction) {
+            const listTransaction = JSON.parse(hasListTransaction);
+            const updatedData = listTransaction.find((val) => val.id === detailTransaction.id);
+            if(updatedData) {
+                updatedData.status = 3;
+            }
+            setTimeout(() => {
+                openNotificationWithRedirect('Data has been updated', listTransaction)
+            }, 2500)
+        }
+    }
+
+    const handleDownloadPDF = async () => {
+        setLoadingDownload(true);
+        const element = cardRef.current;
+        const canvas = await html2canvas(element);
+        const dataImage = canvas.toDataURL('image/png');
+    
+        const pdf = new jsPDF();
+        const imgProperties = pdf.getImageProperties(dataImage);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+    
+        pdf.addImage(dataImage, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save('download.pdf');
+        setTimeout(() => {
+            api.info({
+                message: `Success`,
+                description: "Invoice downloaded",
+                placement: "top",
+            });
+            setLoadingDownload(false)
+        }, 1500)
+      };
+    
+
     return (
         <DetailStyled>
              {contextHolder}
             <PackageHeader history={`Detail ${slug}`} backUrl={`activity`} />
-            <Row>
+            <Row ref={cardRef}>
                 <Col span={22} offset={1}>
                 <ImageBanner />
                 </Col>
-                <Col span={22} offset={1}>
-                <Typography.Title level={5}> Detail Laundry </Typography.Title>
-                <div className="text-list">
+                <Row className="section-item">
                     {
-                        LIST_DETAIL_LAUNDRY.map((item, i) => {
-                            return (
-                                <div className="text-item" key={i}>
-                                    <Typography>{item.label}</Typography>
-                                    <Typography className="text-bold">{item.value}</Typography>
-                                </div>
-                            )
-                        })
+                        detailTransaction.status === 3 ? <Image src={Watermark.src} width={300}  preview={false}/> : null
                     }
-                </div>
-                </Col>
-                <Col span={22} offset={1}>
-                    <Divider />
-                </Col>
-                <Col span={22} offset={1}>
-                <Typography.Title level={5}> Jenis Paket: {detailTransaction.type} </Typography.Title>
-                <div className="text-list">
-                    {
-                        LIST_ITEM_DETAIL_LAUNDRY.map((item, i) => {
-                            return (
-                                <div className="text-item" key={i}>
-                                    <Typography>{item.label}</Typography>
-                                    <Typography className="text-bold">Rp{item.value}</Typography>
-                                </div>
-                            )
-                        })
-                    }
-                </div>
-                </Col>
-                <Col span={22} offset={1}>
-                    <div className="total">
-                        <Typography>Total Rp{totalPrice}</Typography>
-                    </div>
-                </Col>
+                    <Col span={22} offset={1}>
+                        <Typography.Title level={5}> Detail Laundry </Typography.Title>
+                        <div className="text-list">
+                            {
+                                LIST_DETAIL_LAUNDRY.map((item, i) => {
+                                    return (
+                                        <div className="text-item" key={i}>
+                                            <Typography>{item.label}</Typography>
+                                            <Typography className="text-bold">{item.value}</Typography>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    </Col>
+                    <Col span={22} offset={1}>
+                        <Divider />
+                    </Col>
+                    <Col span={22} offset={1}>
+                        <Typography.Title level={5}> Jenis Paket: {detailTransaction.type} </Typography.Title>
+                        <div className="text-list">
+                            {
+                                LIST_ITEM_DETAIL_LAUNDRY.map((item, i) => {
+                                    return (
+                                        <div className="text-item" key={i}>
+                                            <Typography>{item.label}</Typography>
+                                            <Typography className="text-bold">Rp{item.value}</Typography>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    </Col>
+                    <Col span={22} offset={1}>
+                        <div className="total">
+                            <Typography>Total Rp{totalPrice}</Typography>
+                        </div>
+                    </Col>
+                </Row>
             </Row>
             {
                 dataUserIdle.username === "admin" ?
+                detailTransaction.status === 0 ?
                 <Row>
                     <Col span={22} offset={1}>
                         <Row>
@@ -237,12 +265,31 @@ const RenderContent = ({ slug, detailTransaction, dataUserIdle }) => {
                     </Col>
                 </Row>
                 :
+                detailTransaction.status === 1 ?
+                <Row>
+                    <Col span={22} offset={1}>
+                        <Row>
+                            <Col span={24}>
+                                <div className="standard-button" style={{
+                                    paddingLeft: "12px",
+                                    paddingRight: "12px",
+                                    marginTop: "24px"
+                                }}>
+                                    <Button type="primary" block onClick={handleComplete} loading={isLoadingComplete}>Complete</Button>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+                :
+                null
+                :
                 <div className="standard-button" style={{
                     paddingLeft: "12px",
                     paddingRight: "12px",
                     marginTop: "24px"
                 }}>
-                    <Button type="primary" block onClick={handleSubmit} loading={isLoading}>Download Invoice</Button>
+                    <Button type="primary" block onClick={handleDownloadPDF} loading={isLoadingDownload}>Download Invoice</Button>
                 </div>
             }
         </DetailStyled>

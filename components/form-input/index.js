@@ -1,5 +1,8 @@
 import { Form, Input } from 'antd';
 const FormInput = ({ label, type, identity, required = false, message = "" }) => {
+    function toLowerCase(event) {
+        event.target.value = event.target.value.toLowerCase();
+    }
     return (
         <Form.Item
             label={label}
@@ -8,7 +11,13 @@ const FormInput = ({ label, type, identity, required = false, message = "" }) =>
             rules={[{ required: required, message: message }]}
         >
             {
-                type === "password" ? <Input.Password id={`form_${identity}`} /> : <Input id={`form_${identity}`}  />
+                label === "Password" && <Input.Password id={`form_${identity}`} />
+            }
+            {
+                label === "Full Name" && <Input id={`form_${identity}`} />
+            }
+            {
+                label === "Username" && <Input id={`form_${identity}`} onInput={toLowerCase} />
             }
         </Form.Item>
     )

@@ -47,6 +47,11 @@ a {
       border-radius: 30px !important;
     }
   }
+  &.btn-small {
+    button {
+      height: 32px !important;
+    }
+  }
   .ant-btn-primary {
     background: #00203f !important;
   }
